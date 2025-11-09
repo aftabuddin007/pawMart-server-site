@@ -20,16 +20,33 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-
+// find data
 const db = client.db('paw_db')
+
 const pawCollection = db.collection('pet_product')
 app.get('/pet_product',async (req,res)=>{
-
-
   const result =await pawCollection.find().toArray()
+  res.send(result)
+})
+
+// post product
+app.post('/pet_product', async (req,res)=>{
+  const data = req.body
+  console.log(data)
+const result = await pawCollection.insertOne(data)
+
+
 
   res.send(result)
 })
+
+
+// recent 6 data
+app.get('/recent-product', async (req,res)=>{
+const result = await pawCollection.find().sort({date:'desc'}).limit(6).toArray()
+  res.send(result)
+})
+
 
 
 
