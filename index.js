@@ -19,10 +19,17 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+const db = client.db('paw_db')
+const pawCollection = db.collection('pet_product')
+app.get('/pet_product',async (req,res)=>{
 
+
+  const result =await pawCollection.find().toArray()
+
+  res.send(result)
+})
 
 
 
