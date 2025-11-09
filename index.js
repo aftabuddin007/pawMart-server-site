@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port =process.env.port || 3000
 
@@ -35,11 +35,18 @@ app.post('/pet_product', async (req,res)=>{
   console.log(data)
 const result = await pawCollection.insertOne(data)
 
-
-
   res.send(result)
 })
-
+// product details
+app.get('/pet_product/:id', async (req,res)=>{
+  const {id} = req.params
+  console.log(id)
+  const result = await pawCollection.findOne({_id : new ObjectId(id)})
+  res.send({
+    success:true,
+    result
+  })
+})
 
 // recent 6 data
 app.get('/recent-product', async (req,res)=>{
