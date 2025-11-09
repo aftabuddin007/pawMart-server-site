@@ -47,6 +47,17 @@ app.get('/pet_product/:id', async (req,res)=>{
     result
   })
 })
+//order press
+
+const orderCollection = db.collection('orders')
+app.post('/orders', async(req,res)=>{
+  const order = req.body;
+  const result = await orderCollection.insertOne(order)
+  res.send({
+    success:true,
+    result
+  })
+})
 
 // recent 6 data
 app.get('/recent-product', async (req,res)=>{
