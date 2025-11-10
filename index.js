@@ -125,6 +125,14 @@ const result = await pawCollection.find().sort({date:'desc'}).limit(6).toArray()
   res.send(result)
 })
 
+// search
+app.get('/search',async (req,res)=>{
+  const searchText = req.query.search
+  const result =await pawCollection.find({name: {$regex : searchText,$options:'i'}}).toArray()
+  res.send(result)
+
+})
+
 
 
 
