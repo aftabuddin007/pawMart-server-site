@@ -89,7 +89,19 @@ app.put('/pet_product/:id', async (req, res) => {
   });
 });
 
+// delete product
+app.delete('/pet_product/:id', async (req,res)=>{
+  const {id} = req.params
+    const query = { _id: new ObjectId(id) };
 
+const result = await pawCollection.deleteOne(query)
+
+res.send({
+  success:true,
+  result
+})
+
+})
 
 
 
