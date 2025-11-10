@@ -40,7 +40,7 @@ const result = await pawCollection.insertOne(data)
 // product details
 app.get('/pet_product/:id', async (req,res)=>{
   const {id} = req.params
-  console.log(id)
+  // console.log(id)
   const result = await pawCollection.findOne({_id : new ObjectId(id)})
   res.send({
     success:true,
@@ -58,6 +58,40 @@ app.post('/orders', async(req,res)=>{
     result
   })
 })
+
+
+
+
+// my-list
+app.get('/pet_products', async (req,res)=>{
+const email = req.query.email
+// console.log(email)
+if (!email) {
+    return res.status(400).send({ message: "Email is missing in query" });
+  }
+  const result = await pawCollection.find({email : email}).toArray()
+  res.send(result)
+})
+
+
+
+
+
+
+
+
+// my Order list
+app.get('/orders', async (req,res)=>{
+  const email = req.query.email
+  // console.log(email)
+  if (!email) {
+    return res.status(400).send({ message: "Email is missing in query" });
+  }
+  const result = await orderCollection.find({email : email}).toArray()
+
+  res.send(result)
+})
+
 
 // recent 6 data
 app.get('/recent-product', async (req,res)=>{
