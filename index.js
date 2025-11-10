@@ -32,7 +32,7 @@ app.get('/pet_product',async (req,res)=>{
 // post product
 app.post('/pet_product', async (req,res)=>{
   const data = req.body
-  console.log(data)
+  // console.log(data)
 const result = await pawCollection.insertOne(data)
 
   res.send(result)
@@ -73,7 +73,21 @@ if (!email) {
   res.send(result)
 })
 
+// update product
+app.put('/pet_product/:id', async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  // console.log("Updating product:", id, data);
 
+  const query = { _id: new ObjectId(id) };
+  const update = { $set: data };
+
+  const result = await pawCollection.updateOne(query, update);
+  res.send({
+    success:true,
+    result
+  });
+});
 
 
 
