@@ -132,6 +132,16 @@ app.get('/search',async (req,res)=>{
   res.send(result)
 
 })
+// filter by category
+app.get('/filterProduct', async (req,res)=>{
+  const category = req.query.category;
+ let query = {}
+  if(category && category !== 'All'){
+    query={category:category}
+    const result = await pawCollection.find(query).toArray()
+    res.send(result)
+  }
+})
 
 
 
