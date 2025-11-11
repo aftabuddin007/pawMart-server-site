@@ -6,9 +6,39 @@ const port =process.env.port || 3000
 
 app.use(cors());
 app.use(express.json());
+require('dotenv').config()
+// firebase
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./serviceKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+const verifyToken = async(req,res,next)=>{
+  
+ const authorization = req.headers.authorization
+ if(!authorization) {
+  res.status(401).send({
+    message:"unauthorize access. Token not found"
+  })
+ const token = authorization.split(' ')[1]
+ }
+ try{
+
+   await admin.auth().verifyIdToken(token)
+    next()
+ }catch (err){
+  res.status(401).send({
+    message:"unauthorize access"
+  })
+ }
+
+}
 
 
-const uri = "mongodb+srv://paw_db:Qwu1bkSvonx1DDGL@cluster0.7n9qtku.mongodb.net/?appName=Cluster0";
+
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.7n9qtku.mongodb.net/?appName=Cluster0`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -38,7 +68,7 @@ const result = await pawCollection.insertOne(data)
   res.send(result)
 })
 // product details
-app.get('/pet_product/:id', async (req,res)=>{
+app.get('/pet_product/:id',async (req,res)=>{
   const {id} = req.params
   // console.log(id)
   const result = await pawCollection.findOne({_id : new ObjectId(id)})
@@ -138,7 +168,7 @@ app.get('/filterProduct', async (req,res)=>{
  let query = {}
   if(category && category !== 'All'){
     query={category:category}
-    const result = await pawCollection.find(query).toArray()
+    const result = await pawCollection.find(query).toArray();
     res.send(result)
   }
 })
