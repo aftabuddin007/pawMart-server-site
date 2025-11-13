@@ -18,15 +18,16 @@ admin.initializeApp({
 const verifyToken = async(req,res,next)=>{
   
  const authorization = req.headers.authorization
- if(!authorization) {
-  res.status(401).send({
+ if(!authorization ) {
+  return res.status(401).send({
     message:"unauthorize access. Token not found"
   })
- const token = authorization.split(' ')[1]
- }
+}
+const token = authorization.split(' ')[1]
  try{
 
-   await admin.auth().verifyIdToken(token)
+   const decode = await admin.auth().verifyIdToken(token)
+   res.user = decode
     next()
  }catch (err){
   res.status(401).send({
@@ -93,7 +94,7 @@ app.post('/orders', async(req,res)=>{
 
 
 // my-list
-app.get('/pet_products', async (req,res)=>{
+app.get('/pet_products' ,async (req,res)=>{
 const email = req.query.email
 // console.log(email)
 if (!email) {
@@ -137,7 +138,7 @@ res.send({
 
 
 // my Order list
-app.get('/orders', async (req,res)=>{
+app.get('/orders' , async (req,res)=>{
   const email = req.query.email
   // console.log(email)
   if (!email) {
