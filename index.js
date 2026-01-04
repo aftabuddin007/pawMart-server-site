@@ -55,11 +55,7 @@ async function run() {
 const db = client.db('paw_db')
 
 const pawCollection = db.collection('pet_product')
-// app.get('/pet_product', async (req, res) => {
-//   const sort = req.query.sort === 'low' ? 1 : -1;
-//   const result = await pawCollection.find().sort({ price: sort }).toArray();
-//   res.send(result);
-// });
+
 app.get('/pet_product', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;   // current page
@@ -202,6 +198,8 @@ app.get('/filterProduct', async (req,res)=>{
     res.send(result)
   }
 })
+// statistics
+// Dashboard summary
 
 
 
