@@ -50,15 +50,44 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
 // find data
 const db = client.db('paw_db')
 
 const pawCollection = db.collection('pet_product')
-app.get('/pet_product',async (req,res)=>{
-  const result =await pawCollection.find().toArray()
-  res.send(result)
-})
+// app.get('/pet_product', async (req, res) => {
+//   const sort = req.query.sort === 'low' ? 1 : -1;
+//   const result = await pawCollection.find().sort({ price: sort }).toArray();
+//   res.send(result);
+// });
+app.get('/pet_product', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;   // current page
+    const limit = 8;                              // products per page
+    const skip = (page - 1) * limit;
+
+    const sortOrder = req.query.sort === 'low' ? 1 : -1;
+
+    const totalProducts = await pawCollection.countDocuments();
+
+    const products = await pawCollection
+      .find()
+      .sort({ price: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    res.send({
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: page,
+      products
+    });
+  } catch (error) {
+    res.status(500).send({ message: 'Server Error' });
+  }
+});
+
 
 // post product
 app.post('/pet_product', async (req,res)=>{
@@ -152,7 +181,7 @@ app.get('/orders' , async (req,res)=>{
 
 // recent 6 data
 app.get('/recent-product', async (req,res)=>{
-const result = await pawCollection.find().sort({date:'desc'}).limit(6).toArray()
+const result = await pawCollection.find().sort({date:'desc'}).limit(8).toArray()
   res.send(result)
 })
 
@@ -181,8 +210,7 @@ app.get('/filterProduct', async (req,res)=>{
 
 
 
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+   
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
